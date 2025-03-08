@@ -1,0 +1,26 @@
+function add_custom_dates_to_content($content) {
+    if (is_single() || is_page()) {
+        global $post;
+
+        $today_date = date_i18n('j F Y'); // Today's date in WordPress's localised format
+        $published_date = get_the_date('j F Y', $post->ID); // Post's published date
+        $updated_date = get_the_modified_date('j F Y', $post->ID); // Post's last modified date
+
+        // Construct the information to be appended
+        $date_info = '<div class="custom-date-info" style="margin-top: 20px; padding: 10px; border-top: 1px solid #ddd; font-size: 14px; color: #666;">';
+        $date_info .= '<p><strong>Today\'s Date:</strong> ' . esc_html($today_date) . '</p>';
+        $date_info .= '<p><strong>Published on:</strong> ' . esc_html($published_date) . '</p>';
+        
+        // Only show "Last updated" if the post has been modified after being published
+        if ($updated_date !== $published_date) {
+            $date_info .= '<p><strong>Last Updated on:</strong> ' . esc_html($updated_date) . '</p>';
+        }
+
+        $date_info .= '</div>';
+
+        return $content . $date_info;
+    }
+    return $content;
+}
+
+add_filter('the_content', 'add_custom_dates_to_content');
